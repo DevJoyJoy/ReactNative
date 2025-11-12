@@ -4,24 +4,20 @@ import { StyleSheet, View, Text, TextInput,TouchableOpacity, Button, Image } fro
 
 
 
-export default function App() {
+export default function CreateUser() {
   const [text, setText] = useState()
 
   return (
     <View style={{flex:1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'thistle'}}>
       <Text style={styles.title}>Login</Text>
+      <TextInput placeholder="Nome de usuário" onChangeText={(e) => setText(text)} style={styles.box}/>
       <TextInput placeholder="E-mail" onChangeText={(e) => setText(text)} style={styles.box}/>
-      <TextInput placeholder="Senha" onChangeText={(e) => setText(text)} style={styles.box}/>
+      <TextInput placeholder="Crie sua senha" onChangeText={(e) => setText(text)} style={styles.box}/>
+      <TextInput placeholder="Repita sua senha" onChangeText={(e) => setText(text)} style={styles.box}/>
       <TouchableOpacity onPress={() => console.log("ola")} style={styles.button}>
         <View>
-        Entrar
+        Criar
         </View>
-      </TouchableOpacity>
-      <TouchableOpacity>
-        Criar conta 
-      </TouchableOpacity>
-      <TouchableOpacity>
-        Esqueci minha senha 
       </TouchableOpacity>
       <Image style={styles.image} source={require('../assets/images/tokomaru-new.png')}></Image>
     </View>
