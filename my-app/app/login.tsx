@@ -1,29 +1,45 @@
+import { Link } from "expo-router";
 import React from "react";
+import {router} from 'expo-router';
 import { useState } from "react";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { StyleSheet, View, Text, TextInput,TouchableOpacity, Button, Image } from "react-native";
+import { app } from '../firebaseConfig'
 
 
-
-export default function CreateUser() {
+export default function Login() {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   const [text, setText] = useState()
+
+  const auth = getAuth(app)
+
+  const signIn = async () => {
+    await signInWithEmailAndPassword(auth, email, password)
+    router.navigate('/home')
+    
+  }
 
   return (
     <View style={{flex:1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'thistle'}}>
       <Text style={styles.title}>Login</Text>
-      <TextInput placeholder="Nome de usuário" onChangeText={(e) => setText(text)} style={styles.box}/>
       <TextInput placeholder="E-mail" onChangeText={(e) => setText(text)} style={styles.box}/>
-      <TextInput placeholder="Crie sua senha" onChangeText={(e) => setText(text)} style={styles.box}/>
-      <TextInput placeholder="Repita sua senha" onChangeText={(e) => setText(text)} style={styles.box}/>
-      <TouchableOpacity onPress={() => console.log("ola")} style={styles.button}>
+      <TextInput placeholder="Senha" onChangeText={(e) => setText(text)} style={styles.box}/>
+      <TouchableOpacity onPress={signIn} style={styles.button}>
         <View>
-        Criar
+        Entrar
         </View>
+      </TouchableOpacity>
+      <TouchableOpacity>
+        Criar conta 
+      </TouchableOpacity>
+      <TouchableOpacity>
+        Esqueci minha senha 
       </TouchableOpacity>
       <Image style={styles.image} source={require('../assets/images/tokomaru-new.png')}></Image>
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   colorBlue: {
     color: "Blue", 

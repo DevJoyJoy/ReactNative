@@ -1,27 +1,64 @@
+import { router } from "expo-router";
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from 'react';
+import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { StyleSheet, View, Text, TextInput,TouchableOpacity, Button, Image } from "react-native";
+import Swal from 'sweetalert2';
+import { app } from '../firebaseConfig';
+
+export default function CreateUser() {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [text, setText] = useState("")
+  
+  const minPassword = 6
+  const auth = getAuth(app)
 
 
+  const signUp = async () => {
+    if(password.length >= minPassword) {
+      if (password == confirmPassword) {
+        try {
+          await createUserWithEmailAndPassword(auth, email, password)
+          Swal.fire({
+            icon: "success",
+            title: "Sucesso",
+            text: "Usuário registrado com sucesso!"
+          });
+          return router.navigate('/login')
+        } catch(e){
+          return Swal.fire({
+            icon: "error",
+            title: "Erro",
+            text: "As senhas não coincidem!",
+        });        
+      }
+      } else {
+        return Swal.fire({
+          icon: "error",
+          title: "Erro",
+          text: "As senhas não coincidem!",
+        });
+      }
+    }
+  }
 
-export default function App() {
-  const [text, setText] = useState()
+  useEffect(() => {
+    console.log(email, password, confirmPassword)
+  }, [email, password, confirmPassword])
 
   return (
     <View style={{flex:1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'thistle'}}>
       <Text style={styles.title}>Login</Text>
-      <TextInput placeholder="E-mail" onChangeText={(e) => setText(text)} style={styles.box}/>
-      <TextInput placeholder="Senha" onChangeText={(e) => setText(text)} style={styles.box}/>
-      <TouchableOpacity onPress={() => console.log("ola")} style={styles.button}>
+      <TextInput placeholder="Nome de usuário" onChangeText={(e) => setText(e)} style={styles.box}/>
+      <TextInput placeholder="E-mail" onChangeText={(e) => setEmail(e)} style={styles.box}/>
+      <TextInput placeholder="Crie sua senha" onChangeText={(e) => setPassword(e)} style={styles.box}/>
+      <TextInput placeholder="Repita sua senha" onChangeText={(e) => setConfirmPassword(e)} style={styles.box}/>
+      <TouchableOpacity onPress={signUp} style={styles.button}>
         <View>
-        Entrar
+        Criar
         </View>
-      </TouchableOpacity>
-      <TouchableOpacity>
-        Criar conta 
-      </TouchableOpacity>
-      <TouchableOpacity>
-        Esqueci minha senha 
       </TouchableOpacity>
       <Image style={styles.image} source={require('../assets/images/tokomaru-new.png')}></Image>
     </View>
