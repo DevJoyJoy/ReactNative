@@ -1,10 +1,10 @@
-import { router } from "expo-router";
-import React from "react";
-import { useState, useEffect } from 'react';
-import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
-import { StyleSheet, View, Text, TextInput,TouchableOpacity, Button, Image } from "react-native";
-import Swal from 'sweetalert2';
-import { app } from '../firebaseConfig';
+import { Image } from 'expo-image';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { useState, useEffect } from "react";
+import {router} from 'expo-router';
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { app } from '../firebaseConfig'
+import Swal from 'sweetalert2'
 
 export default function CreateUser() {
   const [email, setEmail] = useState("")
@@ -26,7 +26,7 @@ export default function CreateUser() {
             title: "Sucesso",
             text: "Usuário registrado com sucesso!"
           });
-          return router.navigate('/login')
+          return router.navigate('/')
         } catch(e){
           return Swal.fire({
             icon: "error",
@@ -60,23 +60,23 @@ export default function CreateUser() {
         Criar
         </View>
       </TouchableOpacity>
-      <Image style={styles.image} source={require('../assets/images/tokomaru-new.png')}></Image>
+      <Image style={styles.image} source={require('../assets/images/something.png')}></Image>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  colorBlue: {
-    color: "Blue", 
-    fontSize: 12,
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
-  square: {    
-    backgroundColor: "rebeccapurple",
-    width: 300,
-    height: 300
+  stepContainer: {
+    gap: 8,
+    marginBottom: 8,
   },
   image: {
-    height: 300,
+    height: 310,
     width: 300,
   },
   title: {
@@ -97,4 +97,4 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 10
   }
-})
+});

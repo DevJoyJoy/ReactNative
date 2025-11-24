@@ -1,57 +1,54 @@
-import { Link } from "expo-router";
-import React from "react";
-import {router} from 'expo-router';
+import { Image } from 'expo-image';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import { useState } from "react";
+import {router} from 'expo-router';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { StyleSheet, View, Text, TextInput,TouchableOpacity, Button, Image } from "react-native";
 import { app } from '../firebaseConfig'
 
-
-export default function Login() {
+export default function HomeScreen() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [text, setText] = useState()
 
   const auth = getAuth(app)
 
   const signIn = async () => {
     await signInWithEmailAndPassword(auth, email, password)
-    router.navigate('/home')
+    router.navigate('/Sign')
     
   }
-
   return (
     <View style={{flex:1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'thistle'}}>
+        <Image style={styles.image} source={require('../assets/images/something.png')}></Image>
       <Text style={styles.title}>Login</Text>
-      <TextInput placeholder="E-mail" onChangeText={(e) => setText(text)} style={styles.box}/>
-      <TextInput placeholder="Senha" onChangeText={(e) => setText(text)} style={styles.box}/>
+      <TextInput placeholder="E-mail" onChangeText={(e) => setEmail(email)} style={styles.box}/>
+      <TextInput placeholder="Password" onChangeText={(e) => setPassword(password)} style={styles.box}/>
       <TouchableOpacity onPress={signIn} style={styles.button}>
         <View>
-        Entrar
+        Sign in
         </View>
       </TouchableOpacity>
       <TouchableOpacity>
-        Criar conta 
+        Create an account 
       </TouchableOpacity>
       <TouchableOpacity>
-        Esqueci minha senha 
+        Forgot your password?
       </TouchableOpacity>
-      <Image style={styles.image} source={require('../assets/images/tokomaru-new.png')}></Image>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
-  colorBlue: {
-    color: "Blue", 
-    fontSize: 12,
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
-  square: {    
-    backgroundColor: "rebeccapurple",
-    width: 300,
-    height: 300
+  stepContainer: {
+    gap: 8,
+    marginBottom: 8,
   },
   image: {
-    height: 300,
+    height: 315,
     width: 300,
   },
   title: {
@@ -59,7 +56,7 @@ const styles = StyleSheet.create({
     color: 'rebeccapurple'
   },
   box: {
-    backgroundColor: "silver",
+    backgroundColor: "lavender",
     width: 270,
     height: 35,
     margin: 10,
@@ -72,4 +69,4 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 10
   }
-})
+});
