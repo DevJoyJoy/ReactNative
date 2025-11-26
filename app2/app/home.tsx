@@ -16,7 +16,7 @@ export default function HomeScreen() {
   
   // const auth = getAuth(app)
   // const user = auth.currentUser;
-    async function fetchUsers() {
+    async function userSanrio() {
         try{
             // if (!user) {
             // console.log("User not signed-in!");
@@ -47,6 +47,10 @@ export default function HomeScreen() {
         }
     }
 
+    const list = async () => {
+      return router.navigate('/List')
+    }
+
   
   return (
     <View style={{flex:1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'thistle'}}>
@@ -57,9 +61,14 @@ export default function HomeScreen() {
       <TextInput placeholder="Your sanrio friend" onChangeText={(friend) => setFriend(friend)} style={styles.box}/>
       <TextInput placeholder="Your favorite color" onChangeText={(color) => setColor(color)} style={styles.box}/>
       <TextInput placeholder="A link to a picture of you" onChangeText={(img) => setImg(img)} style={styles.box}/>
-      <TouchableOpacity onPress={fetchUsers} style={styles.button}>
+      <TouchableOpacity onPress={userSanrio} style={styles.button}>
         <View>
           Create user
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={list} style={styles.button}>
+        <View>
+          Go to list
         </View>
       </TouchableOpacity>
     </View>

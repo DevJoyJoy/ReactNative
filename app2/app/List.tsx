@@ -1,72 +1,137 @@
 import { Image } from 'expo-image';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
-import { useState } from "react";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList} from 'react-native';
+import { useState, useEffect } from "react";
 import {router} from 'expo-router';
-import { addDoc, collection, getDocs, serverTimestamp } from 'firebase/firestore'
+import { collection, deleteDoc, doc, getDocs, query, updateDoc } from 'firebase/firestore'
 import { getAuth } from "firebase/auth";
 import { app } from '../firebaseConfig'
 import { db } from '../firebaseConfig'
 
 export default function HomeScreen() {
-  const [name, setName] = useState("")
-  const [age, setAge] = useState("")
-  const [friend, setFriend] = useState("")
-  const [color, setColor] = useState("")
-  const [img, setImg] = useState("")
-  
-  // const auth = getAuth(app)
-  // const user = auth.currentUser;
-    async function fetchUsers() {
-        try{
-            // if (!user) {
-            // console.log("User not signed-in!");
-            // return;
-            // }
-        
-            if (!name || !age || !friend || !color){
-            console.log("Missing any info!");
-            return;
-            } 
-        
-            const userSanrio = {
-            name,
-            age,
-            friend,
-            color,
-            // userId: user.uid,
-            imageUrl: img,
-            createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp()
-            };
-        
-            await addDoc(collection(db, 'userSanrio'), userSanrio);
-            console.log("You made it!")
-            return router.navigate('/');
-        } catch (err) {
-          console.log("Erro ao cadastrar:", err);
-        }
+
+  const [sanrio, setSanrio] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  async function fetchSanrio() {
+    try {
+      const q = query(collection(db, "userSanrio"));
+      const snapshot = await getDocs(q);
+
+      console.log(snapshot.docs)
+
+      const list = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setSanrio(list);
+      console.log(list);
+
+    } catch (err) {
+      console.log("Error on finding Sanrio:", err);
+    } finally {
+      setLoading(false);
     }
+  }
+
+  async function updateSanrio(id: string, data: any) {
+    try {
+      const ref = doc(db, "sanrio", id);
+      await updateDoc(ref, data);
+
+      alert("Sanrio updated!");
+      fetchSanrio();
+
+    } catch (err) {
+      console.log("Error on updating:", err);
+    }
+  }
+
+  async function deleteSanrio(id: string) {
+    try {
+      const ref = doc(db, "vehicles", id);
+      await deleteDoc(ref);
+
+      alert("Sanrio deleted!");
+      fetchSanrio();
+
+    } catch (err) {
+      console.log("Error on deleting:", err);
+    }
+  }
+
+  useEffect(() => {
+    fetchSanrio();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={{ padding: 20 }}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
+
+  if (sanrio.length === 0) {
+    return (
+      <View style={{flex:1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'thistle'}}>
+        <Image style={styles.image} source={require('../assets/images/something.png')}></Image>
+      <Text style={styles.title}>No Sanrio Friend found...</Text>
+    </View>
+    );
+  }
+    
 
   
   return (
     <View style={{flex:1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'thistle'}}>
         <Image style={styles.image} source={require('../assets/images/something.png')}></Image>
-      <Text style={styles.title}>Create your profile</Text>
-      <TextInput placeholder="Name" onChangeText={(name) => setName(name)} style={styles.box}/>
-      <TextInput placeholder="Age" onChangeText={(age) => setAge(age)} style={styles.box}/>
-      <TextInput placeholder="Your sanrio friend" onChangeText={(friend) => setFriend(friend)} style={styles.box}/>
-      <TextInput placeholder="Your favorite color" onChangeText={(color) => setColor(color)} style={styles.box}/>
-      <TextInput placeholder="A link to a picture of you" onChangeText={(img) => setImg(img)} style={styles.box}/>
-      <TouchableOpacity onPress={fetchUsers} style={styles.button}>
-        <View>
-          Create user
-        </View>
-      </TouchableOpacity>
-    </View>
+      <Text style={styles.title}>Friends</Text>
+      <FlatList
+        data={sanrio}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.box}>
+
+            {/* Caixinha */}
+            <View style={styles.littleBox}>
+
+              <View style={styles.textBox}>
+                <Text style={{ fontSize: 18, fontWeight: "600" }}>{item.name}</Text>
+                <Text style={{ opacity: 0.7 }}>Friend: {item.friend}</Text>
+                <Text style={{ opacity: 0.7 }}>Color: {item.color}</Text>
+              </View>
+
+              <Image style={styles.userImg} source={item.imageUrl}></Image>
+
+            </View>
+
+            {/* Botões */}
+            <View style={{ flexDirection: "row", marginTop: 12, gap: 12 }}>
+
+              <TouchableOpacity style={styles.button} onPress={() => updateSanrio(item.id, { brand: "Atualizado" })}>
+                <Text style={{ color: "#fff", fontWeight: "600" }}>Edit</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.button} onPress={() => deleteSanrio(item.id)}>
+                <Text style={{ color: "#fff", fontWeight: "600" }}>Excluir</Text>
+              </TouchableOpacity>
+
+            </View>
+          
+          </View>
+        )}
+      />
+      </View>
   );
 }
 
+
 const styles = StyleSheet.create({
+  userImg: {
+    height: 70,
+    width: 70
+  },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -77,8 +142,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   image: {
-    height: 315,
-    width: 300,
+    height: 215,
+    width: 200,
   },
   title: {
     fontSize: 40,
@@ -87,15 +152,27 @@ const styles = StyleSheet.create({
   box: {
     backgroundColor: "lavender",
     width: 270,
-    height: 35,
+    height: 130,
     margin: 10,
     borderRadius: 10,
+    display: 'flex',
     padding: 8
   },
   button: {
-    backgroundColor: 'rebeccapurple',
-    margin: 10,
-    padding: 8,
-    borderRadius: 10
+    backgroundColor: "rebeccapurple",
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 8,
+  },
+  littleBox: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+
+  textBox:{
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between'    
   }
 });
