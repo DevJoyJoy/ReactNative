@@ -13,21 +13,25 @@ export default function HomeScreen() {
 
   const signIn = async () => {
     await signInWithEmailAndPassword(auth, email, password)
-    router.navigate('/Sign')
-    
+    router.navigate('/Home') 
   }
+
+  const createAccount = async () => {
+    router.navigate('/Sign')
+  }
+
   return (
     <View style={{flex:1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'thistle'}}>
         <Image style={styles.image} source={require('../assets/images/something.png')}></Image>
       <Text style={styles.title}>Login</Text>
-      <TextInput placeholder="E-mail" onChangeText={(e) => setEmail(email)} style={styles.box}/>
-      <TextInput placeholder="Password" onChangeText={(e) => setPassword(password)} style={styles.box}/>
+      <TextInput placeholder="E-mail" onChangeText={(email) => setEmail(email)} style={styles.box}/>
+      <TextInput placeholder="Password" onChangeText={(password) => setPassword(password)} style={styles.box}/>
       <TouchableOpacity onPress={signIn} style={styles.button}>
         <View>
         Sign in
         </View>
       </TouchableOpacity>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={createAccount}>
         Create an account 
       </TouchableOpacity>
       <TouchableOpacity>

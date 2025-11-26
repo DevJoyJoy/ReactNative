@@ -41,7 +41,7 @@ export default function HomeScreen() {
         
             await addDoc(collection(db, 'userSanrio'), userSanrio);
             console.log("You made it!")
-            return router.navigate('/List');
+            return router.navigate('/');
         } catch (err) {
           console.log("Erro ao cadastrar:", err);
         }

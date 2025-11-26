@@ -44,20 +44,29 @@ export default function CreateUser() {
     }
   }
 
+  const login = async () => {
+    return router.navigate('/');
+  }
+
   useEffect(() => {
     console.log(email, password, confirmPassword)
   }, [email, password, confirmPassword])
 
   return (
     <View style={{flex:1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'thistle'}}>
-      <Text style={styles.title}>Login</Text>
+      <Text style={styles.title}>Register</Text>
       <TextInput placeholder="Nome de usuário" onChangeText={(e) => setText(e)} style={styles.box}/>
       <TextInput placeholder="E-mail" onChangeText={(e) => setEmail(e)} style={styles.box}/>
       <TextInput placeholder="Crie sua senha" onChangeText={(e) => setPassword(e)} style={styles.box}/>
       <TextInput placeholder="Repita sua senha" onChangeText={(e) => setConfirmPassword(e)} style={styles.box}/>
       <TouchableOpacity onPress={signUp} style={styles.button}>
         <View>
-        Criar
+        Create
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={login}>
+        <View>
+        Already have an account? Sign in!
         </View>
       </TouchableOpacity>
       <Image style={styles.image} source={require('../assets/images/something.png')}></Image>
@@ -84,7 +93,7 @@ const styles = StyleSheet.create({
     color: 'rebeccapurple'
   },
   box: {
-    backgroundColor: "silver",
+    backgroundColor: "lavender",
     width: 270,
     height: 35,
     margin: 10,
